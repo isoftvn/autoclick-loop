@@ -37,6 +37,7 @@ jobs:
             --noconfirm `
             --clean `
             --windowed `
+            --onefile `
             --name AutoClickLoop `
             --add-data "logo.png;." `
             --add-data "logo-app.png;." `
@@ -47,4 +48,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: AutoClickLoop-Windows
-          path: dist/AutoClickLoop
+          path: dist/AutoClickLoop.exe

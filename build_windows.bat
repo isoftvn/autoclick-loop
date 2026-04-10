@@ -27,6 +27,7 @@ pyinstaller ^
   --noconfirm ^
   --clean ^
   --windowed ^
+  --onefile ^
   --name AutoClickLoop ^
   --add-data "logo.png;." ^
   --add-data "logo-app.png;." ^
