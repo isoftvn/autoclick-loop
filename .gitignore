@@ -7,3 +7,6 @@ __pycache__/
 dist/
 build/
 *.spec.bak
+
+# Local automation scripts created by the app.
+*.json

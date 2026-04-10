@@ -6,6 +6,7 @@ import threading
 import json
 import os
 import glob
+import queue
 
 class MUAutoApp:
     def __init__(self, root):
@@ -15,6 +16,8 @@ class MUAutoApp:
         self.steps = []
         self.current_file = None
         self.pending_capture = None
+        self.automation_running = False
+        self.ui_queue = queue.Queue()
 
         # --- SET APP ICON Ở ĐÂY ---
         try:
@@ -275,26 +278,47 @@ class MUAutoApp:
 
         self.run_btn.config(text="RUNNING...", state=tk.DISABLED)
         self.set_run_status(f"Trạng thái automation: Đang chạy 0/{loop_count} vòng", "#d17b00")
-        threading.Thread(target=self.execute, args=(loop_count,), daemon=True).start()
+        self.automation_running = True
+        threading.Thread(target=self.execute, args=(loop_count, list(self.steps)), daemon=True).start()
+        self.process_ui_queue()
 
-    def execute(self, loop_count):
-        total_steps = len(self.steps)
+    def queue_run_status(self, text, color="#555555"):
+        self.ui_queue.put(("status", text, color))
+
+    def queue_finish(self, success, error=None):
+        self.ui_queue.put(("finish", success, error))
+
+    def process_ui_queue(self):
+        try:
+            while True:
+                event = self.ui_queue.get_nowait()
+                if event[0] == "status":
+                    _, text, color = event
+                    self.set_run_status(text, color)
+                elif event[0] == "finish":
+                    _, success, error = event
+                    if success:
+                        self.finish_macro_success()
+                    else:
+                        self.finish_macro_error(error)
+        except queue.Empty:
+            pass
+
+        if self.automation_running or not self.ui_queue.empty():
+            self.root.after(100, self.process_ui_queue)
+
+    def execute(self, loop_count, steps):
+        total_steps = len(steps)
         try:
             for loop_index in range(loop_count):
-                self.root.after(
-                    0,
-                    lambda current=loop_index + 1: self.set_run_status(
-                        f"Trạng thái automation: Đang chạy vòng {current}/{loop_count}",
-                        "#d17b00"
-                    )
+                self.queue_run_status(
+                    f"Trạng thái automation: Đang chạy vòng {loop_index + 1}/{loop_count}",
+                    "#d17b00"
                 )
-                for step_index, step in enumerate(self.steps, start=1):
-                    self.root.after(
-                        0,
-                        lambda current_loop=loop_index + 1, current_step=step_index, action=step["action"].upper(): self.set_run_status(
-                            f"Trạng thái automation: Vòng {current_loop}/{loop_count} | Bước {current_step}/{total_steps} | {action}",
-                            "#d17b00"
-                        )
+                for step_index, step in enumerate(steps, start=1):
+                    self.queue_run_status(
+                        f"Trạng thái automation: Vòng {loop_index + 1}/{loop_count} | Bước {step_index}/{total_steps} | {step['action'].upper()}",
+                        "#d17b00"
                     )
                     if step['action'] == 'delay':
                         time.sleep(step['value'])
@@ -308,15 +332,17 @@ class MUAutoApp:
                                 pyautogui.click(p.x / 2, p.y / 2, duration=0.2)
                         except Exception:
                             pass
-            self.root.after(0, self.finish_macro_success)
+            self.queue_finish(True)
         except Exception as e:
-            self.root.after(0, lambda: self.finish_macro_error(e))
+            self.queue_finish(False, e)
 
     def finish_macro_success(self):
+        self.automation_running = False
         self.run_btn.config(text="🚀 BẮT ĐẦU", state=tk.NORMAL)
         self.set_run_status("Trạng thái automation: Hoàn thành", "green")
 
     def finish_macro_error(self, error):
+        self.automation_running = False
         self.run_btn.config(text="🚀 BẮT ĐẦU", state=tk.NORMAL)
         self.set_run_status(f"Trạng thái automation: Lỗi - {error}", "red")
         messagebox.showerror("Lỗi automation", str(error))

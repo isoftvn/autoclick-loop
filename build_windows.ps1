@@ -8,7 +8,7 @@ if (-not (Test-Path ".venv-win\Scripts\python.exe")) {
 & ".venv-win\Scripts\Activate.ps1"
 
 python -m pip install --upgrade pip
-python -m pip install pyinstaller pyautogui pillow pyscreeze pymsgbox pytweening mouseinfo pygetwindow pyrect pyperclip
+python -m pip install pyinstaller pyautogui pillow pyscreeze pymsgbox pytweening mouseinfo pygetwindow pyrect pyperclip opencv-python
 
 if (-not (Test-Path "logo.ico")) {
     python -c "from PIL import Image; Image.open('logo.png').save('logo.ico')"

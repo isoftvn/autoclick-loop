@@ -13,7 +13,7 @@ if errorlevel 1 exit /b 1
 python -m pip install --upgrade pip
 if errorlevel 1 exit /b 1
 
-python -m pip install pyinstaller pyautogui pillow pyscreeze pymsgbox pytweening mouseinfo pygetwindow pyrect pyperclip
+python -m pip install pyinstaller pyautogui pillow pyscreeze pymsgbox pytweening mouseinfo pygetwindow pyrect pyperclip opencv-python
 if errorlevel 1 exit /b 1
 
 if not exist "logo.ico" (

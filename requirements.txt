@@ -1,0 +1,11 @@
+pyautogui==0.9.54
+Pillow
+PyScreeze
+PyMsgBox
+PyTweening
+MouseInfo
+PyGetWindow
+PyRect
+pyperclip
+pyobjc-core
+pyobjc-framework-Quartz

@@ -5,18 +5,18 @@ Tool desktop Python dùng để tạo và chạy automation click theo step, có
 ## Chạy source
 
 ```bash
-cd /Users/m3pro/ezp/automation
-python3 app.py
+cd /Users/m3pro/ezp/autoclick-loop
+.venv/bin/python app.py
 ```
 
 Nếu chưa có dependency:
 
 ```bash
-cd /Users/m3pro/ezp/automation
+cd /Users/m3pro/ezp/autoclick-loop
 python3 -m venv .venv
 source .venv/bin/activate
-pip install pyautogui pillow pyscreeze pymsgbox pytweening mouseinfo pygetwindow pyrect pyperclip pyobjc-core pyobjc-framework-quartz
-python3 app.py
+pip install -r requirements.txt
+python app.py
 ```
 
 Lưu ý trên macOS:
@@ -28,7 +28,7 @@ Lưu ý trên macOS:
 Build app `.app` bằng PyInstaller:
 
 ```bash
-cd /Users/m3pro/ezp/automation
+cd /Users/m3pro/ezp/autoclick-loop
 .venv/bin/pyinstaller -y AutoClickLoop.spec
 ```
 
