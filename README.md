@@ -60,6 +60,21 @@ Output:
 dist\AutoClickLoop\AutoClickLoop.exe
 ```
 
+## Windows code signing
+
+Workflow GitHub Actions đã hỗ trợ ký số file Windows `.exe` bằng Azure Trusted Signing nếu repo có đủ secrets sau:
+
+```text
+AZURE_TENANT_ID
+AZURE_CLIENT_ID
+AZURE_CLIENT_SECRET
+TRUSTED_SIGNING_ENDPOINT
+TRUSTED_SIGNING_ACCOUNT_NAME
+TRUSTED_SIGNING_CERTIFICATE_PROFILE_NAME
+```
+
+Khi các secrets này được cấu hình trong GitHub repository settings, workflow build Windows sẽ tự ký `AutoClickLoop.exe` trước khi upload artifact và tạo Release.
+
 ## Asset icon
 
 - `logo-app.png`: icon dùng khi chạy `python3 app.py`
